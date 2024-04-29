@@ -29,29 +29,33 @@ public class PlayerControler : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Dynamic; // the player will be affected by gravity
         rb.velocity = Vector2.zero; // reset the velocity
         isReady = true;
+        rb.AddForce(Vector2.up * jumpForce); // add a force to the player
     }
 
     void Update()
     {
-       if (isReady && !isDead){
-        float angle, rotspeed = rotationSpeed;
-        if(rb.velocity.y < -2){
-            angle = Mathf.Lerp(-90, 90, rb.velocity.y);
-        }
-        else {
-            angle = 20;
-            rotspeed *=3;
-        }
+        if (isReady && !isDead){
+            float angle, rotspeed = rotationSpeed;
+            if(rb.velocity.y < -2){
+                angle = Mathf.Lerp(-90, 90, rb.velocity.y);
+            }
+            else {
+                angle = 20;
+                rotspeed *=3;
+            }
 
-        Quaternion rotation = Quaternion.Euler(0, 0, angle); // create a quaternion with the angle, conversion for unity
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotspeed * Time.deltaTime); // slerp is a smooth rotation
-        
-        if (Input.GetMouseButtonDown(0)){
-            rb.velocity = Vector2.zero;
-            rb.AddForce(Vector2.up * jumpForce);
-        }
+            Quaternion rotation = Quaternion.Euler(0, 0, angle); // create a quaternion with the angle, conversion for unity
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotspeed * Time.deltaTime); // slerp is a smooth rotation
+            
+            if (Input.GetMouseButtonDown(0)){
+                rb.velocity = Vector2.zero;
+                rb.AddForce(Vector2.up * jumpForce);
+            }
 
-       }
+            if (transform.position.y > 7){
+                Die();
+            }
+        }
     }
 
 
@@ -67,10 +71,17 @@ public class PlayerControler : MonoBehaviour
         }
     }
 
+    void OnTriggerExit2D(Collider2D other){
+        if(other.CompareTag("Pipe")){
+            ScoreManager.Instance.AddScore();
+        }
+    }
+
 
     void OnDestroy()
     {
         GameManager.OnGameStart -= OnGameStarted;
     }
 
+    
 }
