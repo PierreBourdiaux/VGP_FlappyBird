@@ -65,6 +65,8 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadSceneAsync(0); // 0 is the index of the main scene
+        
+
     }
 
 
