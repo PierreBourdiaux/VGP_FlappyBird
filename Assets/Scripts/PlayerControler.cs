@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerControler : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class PlayerControler : MonoBehaviour
 
     bool isDead = false;
     bool isReady = false;
+
+    public Animator animator;
 
     void Start()
     {
@@ -49,6 +52,19 @@ public class PlayerControler : MonoBehaviour
         }
 
        }
+    }
+
+
+    void OnCollisionEnter2D(Collision2D other){
+        Die(); // we don't need to specify the object that we collided with, in any case we will die
+    }
+    void Die(){
+        if(!isDead){
+            isDead = true;
+            animator.speed = 0;
+            transform.DORotate(new Vector3(0, 0, -90), 0.5f); // rotate the player 90 degrees in 0.5 seconds
+            GameManager.Instance.GameOver();
+        }
     }
 
 
